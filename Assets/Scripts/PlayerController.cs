@@ -7,8 +7,11 @@ public class PlayerController : MonoBehaviour
 {
 
     private Rigidbody playerRb;
+    private Animator playerAnim;
+    public ParticleSystem particleEff;
+    public ParticleSystem dirtParticle;
 
-    public float jumpForce = 10;
+    public float jumpForce = 20;
 
     public float gravityModifier;
     public bool isOnGround = true;
@@ -18,17 +21,21 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         playerRb = GetComponent<Rigidbody>();
+        playerAnim = GetComponent<Animator>();
         Physics.gravity *= gravityModifier;
-
+       
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && isOnGround)
+        if (Input.GetKeyDown(KeyCode.Space) && isOnGround && gameOver != true)
         {
+            //Jump
             playerRb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             isOnGround = false;
+            playerAnim.SetTrigger("Jump_trig");
+            dirtParticle.Stop();
         }
     }
 
@@ -36,8 +43,9 @@ public class PlayerController : MonoBehaviour
     {
 
         if (collision.gameObject.CompareTag("Ground"))
-        {
+        { //if player lands on the ground.
             isOnGround = true;
+            dirtParticle.Play();
         }
         
         //What happens when player collides with obstacle
@@ -45,6 +53,11 @@ public class PlayerController : MonoBehaviour
         {
             Debug.Log("Gameover");
             gameOver = true;
+            playerAnim.SetBool("Death_b", true);
+            playerAnim.SetInteger("DeathType_int", 1);
+            particleEff.Play();
+            dirtParticle.Stop();
+
         }
     }
 }
