@@ -39,6 +39,8 @@ public class PlayerController : MonoBehaviour
         {
             isOnGround = true;
         }
+        
+        //What happens when player collides with obstacle
         else if (collision.gameObject.CompareTag("Obstacle"))
         {
             Debug.Log("Gameover");
